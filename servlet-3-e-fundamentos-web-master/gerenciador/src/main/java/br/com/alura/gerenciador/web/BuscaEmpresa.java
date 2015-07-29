@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,19 +19,36 @@ import br.com.alura.gerenciador.dao.EmpresaDAO;
 public class BuscaEmpresa extends HttpServlet {
 
 	@Override
+	public void init() throws ServletException {
+		super.init();
+		System.out.println("Inicializando Servlet BuscaEmpresa: " + this);
+	}
+
+	public BuscaEmpresa() {
+		System.out.println("Instanciando Servlet BuscaEmpresa:" + this);
+	}
+
+	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		PrintWriter writer = resp.getWriter();
-		writer.println("<html><body>");		
-		
-		
-		String filtro = req.getParameter("filtro");		
-		Collection<Empresa> empresas = new EmpresaDAO().buscaPorSimilaridade(filtro);
-		writer.println("<ul>");
-		for(Empresa empresa : empresas) {
-		  writer.println("<li>" + empresa.getId() + ": " + empresa.getNome() + "</li>");
+
+		String filtro = req.getParameter("filtro");
+
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		writer.println("</ul>");
-		writer.println("</html></body>");
+
+		Collection<Empresa> empresas = new EmpresaDAO().buscaPorSimilaridade(filtro);
+		req.setAttribute("empresas", empresas);
+		RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/paginas/buscaEmpresa.jsp");
+		dispatcher.forward(req, resp);
+
+	}
+
+	@Override
+	public void destroy() {
+		super.destroy();
+		System.out.println("Destruindo Servlet BuscaEmpresa " + this);
 	}
 }
