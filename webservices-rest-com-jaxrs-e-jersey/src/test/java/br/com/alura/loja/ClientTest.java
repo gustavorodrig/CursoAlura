@@ -37,7 +37,7 @@ public class ClientTest {
 		
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target("http://localhost:8088");
-		String conteudo = target.path("/carrinhos").request().get(String.class);
+		String conteudo = target.path("/carrinhos/1").request().get(String.class);
 		
 		System.out.println(conteudo);
 		
